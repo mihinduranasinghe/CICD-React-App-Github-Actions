@@ -52,6 +52,7 @@ jobs:
               #create a build when merge
 
             - name: Upload build folder
+              if: github.event_name == 'push'
               #Upload build folder
               uses: actions/upload-artifact@v2
               with:
