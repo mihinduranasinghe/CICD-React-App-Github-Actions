@@ -18,6 +18,16 @@ jobs:
                   node-version: "12.x"
               #If you ont like the default node version on ubuntu machine
 
+            - name: Cache node modules
+              #caching and restoring npm packages dependencies
+              uses: actions/cache@v2.1.3
+              with:
+                  path: ~/.npm
+                  # for linux
+                  key: ${{runner.os}}-node-${{hashFiles('**/package-lock.json')}}
+                  restore-key: |
+                      ${{runner.os}}-node-
+
             - run: npm ci
               #install dependencies
 
@@ -32,6 +42,7 @@ jobs:
             - name: Build Project
               if: github.event_name == 'push'
               run: npm run build
+              #create a build when merge
 
             - name: Deploy to staging
               if: github.event_name == 'push'
