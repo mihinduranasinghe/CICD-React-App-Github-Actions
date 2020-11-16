@@ -39,10 +39,28 @@ jobs:
               env:
                   CI: true
 
+            - name: Upload test coverage artifacts
+              #Upload artifacts
+              uses: actions/upload-artifacts@v2
+              with:
+                  name: code-coverage #naming the file
+                  path: coverage
+
             - name: Build Project
               if: github.event_name == 'push'
               run: npm run build
               #create a build when merge
+
+            - name: Upload build folder
+              #Upload build folder
+              uses: actions/upload-artifacts@v2
+              with:
+                  name: build #naming the folder
+                  path: build
+
+            - name: Download artifacts
+              uses: actions:download-artifacts
+              #Download artifacts
 
             - name: Deploy to staging
               if: github.event_name == 'push'
