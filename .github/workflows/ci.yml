@@ -1,0 +1,28 @@
+name: CI
+on:
+    pull_request:
+        branches: [develop]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Cloning repo into VM
+              uses: action/checkout@v2
+
+            - name: Use NodeJS
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "12.x"
+              #If you ont like the default node version on ubuntu machine
+
+            - run: npm ci
+              #install dependencies
+
+            - run: npm run format:check
+              #check code formatting with prettier
+
+            - run: npm test -- --coverage
+              #run automated test
+              env:
+                  CI: true
