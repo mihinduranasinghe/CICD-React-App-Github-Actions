@@ -59,7 +59,7 @@ jobs:
                   path: build
 
             - name: Download artifacts
-              uses: actions/download-artifact
+              uses: actions/download-artifact@v2
               #Download artifacts
 
             - name: Deploy to staging
