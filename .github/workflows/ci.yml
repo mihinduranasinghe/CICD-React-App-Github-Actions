@@ -1,0 +1,42 @@
+name: CI
+on:
+    pull_request:
+        branches: [develop]
+    push:
+        branches: [develop]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Cloning repo into VM
+              uses: actions/checkout@v2.3.4
+
+            - name: Use NodeJS
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "12.x"
+              #If you ont like the default node version on ubuntu machine
+
+            - run: npm ci
+              #install dependencies
+
+            - run: npm run format:check
+              #check code formatting with prettier
+
+            - run: npm test -- --coverage
+              #run automated test
+              env:
+                  CI: true
+
+            - name: Build Project
+              if: github.event_name == 'push'
+              run: npm run build
+
+            - name: Deploy to staging
+              if: github.event_name == 'push'
+              run: npx surge --project ./build --domain eight-circle.surge.sh
+              env:
+                  SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
+                  SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
+                  #To generate a surge token ->> surge token

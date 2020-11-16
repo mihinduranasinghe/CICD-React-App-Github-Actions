@@ -15,7 +15,7 @@ function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Automating CICD in React-App using GitHub Actions
+                    Learn React
                 </a>
             </header>
         </div>
