@@ -41,7 +41,7 @@ jobs:
 
             - name: Upload test coverage artifacts
               #Upload artifacts
-              uses: actions/upload-artifacts@v2
+              uses: actions/upload-artifact@v2
               with:
                   name: code-coverage #naming the file
                   path: coverage
