@@ -63,6 +63,15 @@ jobs:
               uses: actions/download-artifact@v2
               #Download artifacts
 
+            - name: Zipping assets
+              # Zip assets to be downloaded in releases
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              run: |
+                  zip -r build.zip ./build
+                  zip -r coverage.zip ./coverage
+              #zip recursively output.zip ./input-folder
+              #Can continue without this step also
+
             - name: Create a Semantic Release
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               #Create a semantic release when it push only to master
