@@ -97,6 +97,7 @@ jobs:
                   #Since these env variables use in 2 steps you can add them in job scope instead of step scope
 
             - name: Upload codecoverage report into CodeCov
+              # upload codecoverage files into codecov.io
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               run: npx codecov
               env:
