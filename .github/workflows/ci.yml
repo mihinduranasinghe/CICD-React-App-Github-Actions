@@ -80,9 +80,18 @@ jobs:
                   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
             - name: Deploy to staging
-              if: github.event_name == 'push'
+              if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
               run: npx surge --project ./build --domain eight-circle.surge.sh
               env:
                   SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
                   SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
                   #To generate a surge token ->> surge token
+
+            - name: Deploy to production
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              run: npx surge --project ./build --domain gainful-ghost.surge.sh
+              env:
+                  SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
+                  SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
+                  #To generate a surge token ->> surge token
+                  #Since these env variables use in 2 steps you can add them in job scope instead of step scope
