@@ -77,7 +77,11 @@ jobs:
               #Create a semantic release when it push only to master
               run: npx semantic-release
               env:
-                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  # GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  GITHUB_TOKEN: ${{secrets.CUSTOM_TOKEN}}
+              # NOTE: If we want to trigger another workflow when this step triggers(To send a slack message),
+              # this default GITHUB_TOKEN cannot be used for that. You need to generate a personalized token in github settings
+              # and that token in repo secrets as CUSTOM_TOKEN for that
 
             - name: Deploy to staging
               if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
