@@ -1,0 +1,79 @@
+name: CI
+on:
+    pull_request:
+        branches: [develop, main]
+    push:
+        branches: [develop, main]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Cloning repo into VM
+              uses: actions/checkout@v2.3.4
+
+            - name: Use NodeJS
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "12.x"
+              #If you ont like the default node version on ubuntu machine
+
+            - name: Cache node modules
+              #caching and restoring npm packages dependencies
+              uses: actions/cache@v2.1.3
+              with:
+                  path: ~/.npm
+                  # for linux
+                  key: ${{runner.os}}-node-${{hashFiles('**/package-lock.json')}}
+                  restore-key: |
+                      ${{runner.os}}-node-
+
+            - run: npm ci
+              #install dependencies
+
+            - run: npm run format:check
+              #check code formatting with prettier
+
+            - run: npm test -- --coverage
+              #run automated test
+              env:
+                  CI: true
+
+            - name: Upload test coverage artifacts
+              #Upload artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: code-coverage #naming the file
+                  path: coverage
+
+            - name: Build Project
+              if: github.event_name == 'push'
+              run: npm run build
+              #create a build when merge
+
+            - name: Upload build folder
+              if: github.event_name == 'push'
+              #Upload build folder
+              uses: actions/upload-artifact@v2
+              with:
+                  name: build #naming the folder
+                  path: build
+
+            - name: Download artifacts
+              uses: actions/download-artifact@v2
+              #Download artifacts
+
+            - name: Create a Semantic Release
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              #Create a semantic release when it push only to master
+              run: npx semantic-release
+              env:
+                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Deploy to staging
+              if: github.event_name == 'push'
+              run: npx surge --project ./build --domain eight-circle.surge.sh
+              env:
+                  SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
+                  SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
+                  #To generate a surge token ->> surge token
