@@ -1,7 +1,5 @@
 name: Notify on Release
-on:
-    issues:
-        types: [opened]
+on: [push]
 
 jobs:
     slack-message:
