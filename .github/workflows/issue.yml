@@ -1,5 +1,4 @@
 name: Notify on Release
-
 on:
     issues:
         types: [opened]
